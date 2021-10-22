@@ -14,11 +14,19 @@ repositoryName #pullRequestNumber title
 
 and links to the PR
 
-## Environment varibles
+## Environment variables
 
 ### `SLACK_BOT_TOKEN`
 
 **Required** A bot token for the app from Slack
+
+The token needs the following scopes:
+
+1. `channels:history`
+2. `channels:read`
+3. `chat:write`
+4. `reactions:read`
+5. `reactions:write`
 
 ### `SLACK_SIGNING_SECRET`
 

@@ -1,11 +1,16 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Slack PR action'
+description: 'Publish PRs as a message to a slack channel updates the message with emojis representing the PR status.'
+author: 'Milkywire'
 inputs:
-  milliseconds: # change this
+  SLACK_BOT_TOKEN:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'Environment variable: A bot token for the app from Slack'
+  SLACK_SIGNING_SECRET:
+    required: true
+    description: 'Environment variable: The signing secret for the app from Slack'
+  slack-channel-id:
+    required: false
+    description: 'The channel id for the channel the message should be posted to If missing the action will post the message to all channels that the bot is a member of.'
 runs:
   using: 'node12'
   main: 'dist/index.js'
