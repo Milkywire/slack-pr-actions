@@ -12,7 +12,7 @@ The message format used is
 repositoryName #pullRequestNumber title
 ```
 
-and links to the PR
+and links to the PR in Github
 
 ## Environment variables
 
