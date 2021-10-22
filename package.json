@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
+  "name": "slack-pr-actions",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Publish PRs as a message to a slack channel updates the message with emojis representing the PR status.",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -25,7 +25,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.6.0"
+    "@actions/core": "^1.6.0",
+    "@actions/github": "^5.0.0",
+    "@slack/bolt": "^3.7.0",
+    "@slack/web-api": "^6.4.0",
+    "dotenv": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^16.10.5",
