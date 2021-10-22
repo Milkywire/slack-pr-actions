@@ -13,3 +13,30 @@ repositoryName #pullRequestNumber title
 ```
 
 and links to the PR
+
+## Environment varibles
+
+### `SLACK_BOT_TOKEN`
+
+**Required** A bot token for the app from Slack
+
+### `SLACK_SIGNING_SECRET`
+
+**Required** The signing secret for the app from Slack
+
+## Inputs
+
+### `slack-channel-id`
+
+The channel id for the Slack channel that the bot should post to. The must have access to the channel. If missing the action will post the message to all channels that the bot is a member of.
+
+## Example usage
+
+```yaml
+uses: milkywire/slack-pr-actions
+  env:
+    SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
+    SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+  with:
+    slack-channel-id: C02B6809Z43
+```
