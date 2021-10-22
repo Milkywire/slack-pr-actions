@@ -1,16 +1,27 @@
 import * as core from '@actions/core'
-import {
-  approvePR,
-  changeRequestPR,
-  commentPR,
-  mergePR,
-  postPullRequestMessage,
-  setSlackChannel
-} from './slack'
 import {context} from '@actions/github'
 
 async function run(): Promise<void> {
   try {
+    if (!process.env.SLACK_BOT_TOKEN) {
+      throw new Error('Missing required environment variable SLACK_BOT_TOKEN')
+    }
+
+    if (!process.env.SLACK_SIGNING_SECRET) {
+      throw new Error(
+        'Missing required environment variable SLACK_SIGNING_SECRET'
+      )
+    }
+
+    const {
+      approvePR,
+      changeRequestPR,
+      commentPR,
+      mergePR,
+      postPullRequestMessage,
+      setSlackChannel
+    } = await import('./slack')
+
     const slackChannelId: string = core.getInput('slack-channel-id')
     setSlackChannel(slackChannelId)
 
