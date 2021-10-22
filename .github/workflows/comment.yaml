@@ -1,0 +1,11 @@
+name: 'build-test'
+on: # rebuild any PRs and main branch changes
+  issue_comment:
+    types: [created]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: logging
+        run: echo "Hello $GITHUB_REF"
