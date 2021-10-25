@@ -2,8 +2,7 @@ import * as core from '@actions/core'
 import {context} from '@actions/github'
 
 async function run(): Promise<void> {
-  // eslint-disable-next-line no-console
-  console.log('Starting slack sync action')
+  core.info('Starting slack sync action')
   try {
     if (!process.env.SLACK_BOT_TOKEN) {
       throw new Error('Missing required environment variable SLACK_BOT_TOKEN')
