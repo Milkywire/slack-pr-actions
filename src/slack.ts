@@ -170,9 +170,7 @@ async function findPRMessage(
       has_more = false
     }
 
-    const message = messages?.find(({text}) =>
-      text?.includes(`<${pullRequestUrl}|`)
-    )
+    const message = messages?.find(({text}) => text?.includes(pullRequestUrl))
 
     if (has_more && response_metadata) {
       cursor = response_metadata.next_cursor

@@ -3,6 +3,8 @@ import {context} from '@actions/github'
 
 async function run(): Promise<void> {
   core.info('Starting slack sync action')
+  // eslint-disable-next-line no-console
+  console.log('Starting slack sync action')
   try {
     if (!process.env.SLACK_BOT_TOKEN) {
       throw new Error('Missing required environment variable SLACK_BOT_TOKEN')
@@ -29,6 +31,8 @@ async function run(): Promise<void> {
     // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
     core.debug(`Posting to channel ${slackChannelId} from action input`)
     if (context.eventName === 'pull_request') {
+      // eslint-disable-next-line no-console
+      console.log('Sync pull request update to slack.')
       const {pull_request: pullRequest, repository} = context.payload
       if (!pullRequest) {
         return
@@ -51,6 +55,10 @@ async function run(): Promise<void> {
         pull_request: pullRequest,
         review: {state}
       } = context.payload
+
+      // eslint-disable-next-line no-console
+      console.log(`Sync pull request review to slack. State: ${state} `)
+
       if (!pullRequest) {
         return
       }
@@ -64,6 +72,8 @@ async function run(): Promise<void> {
         changeRequestPR(url)
       }
     } else if (context.eventName === 'issue_comment') {
+      // eslint-disable-next-line no-console
+      console.log('Sync pull request comment to slack ')
       const {pull_request: pullRequest} = context.payload
       if (!pullRequest) {
         return

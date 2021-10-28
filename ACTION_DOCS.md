@@ -67,7 +67,7 @@ async function run() {
 run()
 ```
 
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
+See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.git p
 
 ## Publish to a distribution branch
 
@@ -103,3 +103,12 @@ See the [actions tab](https://github.com/actions/typescript-action/actions) for 
 ## Usage:
 
 After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
+
+## Release
+
+```bash
+$ git co releases/v1
+$ git merge main
+$ git tag -fa v1 -m "Update v1 tag"
+$ git push origin v1 --force
+```
