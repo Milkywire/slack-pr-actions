@@ -60,53 +60,68 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const slack_1 = __nccwpck_require__(568);
 const github_1 = __nccwpck_require__(5438);
 function run() {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
+        core.info('Starting slack sync action');
+        // eslint-disable-next-line no-console
+        console.log('Starting slack sync action');
         try {
+            if (!process.env.SLACK_BOT_TOKEN) {
+                throw new Error('Missing required environment variable SLACK_BOT_TOKEN');
+            }
+            if (!process.env.SLACK_SIGNING_SECRET) {
+                throw new Error('Missing required environment variable SLACK_SIGNING_SECRET');
+            }
+            const { approvePR, changeRequestPR, commentPR, mergePR, postPullRequestMessage, setSlackChannel } = yield Promise.resolve().then(() => __importStar(__nccwpck_require__(568)));
             const slackChannelId = core.getInput('slack-channel-id');
-            (0, slack_1.setSlackChannel)(slackChannelId);
+            setSlackChannel(slackChannelId);
             // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
             core.debug(`Posting to channel ${slackChannelId} from action input`);
             if (github_1.context.eventName === 'pull_request') {
+                // eslint-disable-next-line no-console
+                console.log('Sync pull request update to slack.');
                 const { pull_request: pullRequest, repository } = github_1.context.payload;
                 if (!pullRequest) {
                     return;
                 }
                 core.debug(JSON.stringify(pullRequest));
                 if (pullRequest.merged) {
-                    (0, slack_1.mergePR)(pullRequest.html_url);
+                    mergePR(pullRequest.html_url);
                 }
                 else {
                     const { number, title } = pullRequest;
-                    (0, slack_1.postPullRequestMessage)((_a = repository === null || repository === void 0 ? void 0 : repository.name) !== null && _a !== void 0 ? _a : '', number, title, pullRequest.html_url, pullRequest.user.avatar_url);
+                    postPullRequestMessage((_a = repository === null || repository === void 0 ? void 0 : repository.name) !== null && _a !== void 0 ? _a : '', number, title, pullRequest.html_url, pullRequest.user.avatar_url);
                 }
             }
             else if (github_1.context.eventName === 'pull_request_review') {
                 const { pull_request: pullRequest, review: { state } } = github_1.context.payload;
+                // eslint-disable-next-line no-console
+                console.log(`Sync pull request review to slack. State: ${state} `);
                 if (!pullRequest) {
                     return;
                 }
                 const { html_url: url } = pullRequest;
                 if (state === 'commented') {
-                    (0, slack_1.commentPR)(url);
+                    commentPR(url);
                 }
                 else if (state === 'approved') {
-                    (0, slack_1.approvePR)(url);
+                    approvePR(url);
                 }
                 else if (state === 'changes_requested') {
-                    (0, slack_1.changeRequestPR)(url);
+                    changeRequestPR(url);
                 }
             }
             else if (github_1.context.eventName === 'issue_comment') {
+                // eslint-disable-next-line no-console
+                console.log('Sync pull request comment to slack ');
                 const { pull_request: pullRequest } = github_1.context.payload;
                 if (!pullRequest) {
                     return;
                 }
                 const { html_url: url } = pullRequest;
-                (0, slack_1.commentPR)(url);
+                commentPR(url);
             }
         }
         catch (error) {
@@ -152,7 +167,7 @@ function setSlackChannel(channelId) {
     slackChannelId = channelId;
 }
 exports.setSlackChannel = setSlackChannel;
-function postPullRequestMessage(repositoryName, pullRequestId, title, pullRequestUrl, avatarUrl) {
+function postPullRequestMessage(repositoryName, pullRequestNumber, title, pullRequestUrl, avatarUrl) {
     return __awaiter(this, void 0, void 0, function* () {
         const channels = yield getChannels();
         for (const channel of channels) {
@@ -162,10 +177,10 @@ function postPullRequestMessage(repositoryName, pullRequestId, title, pullReques
             const message = yield findPRMessage(channel.id, pullRequestUrl, true);
             if (message) {
                 // eslint-disable-next-line no-console
-                console.log(`channel ${channel.name} already have a message for PR ${repositoryName} #${pullRequestId}`);
+                console.log(`channel ${channel.name} already have a message for PR ${repositoryName} #${pullRequestNumber}`);
                 continue;
             }
-            const text = `\`${repositoryName}\` <${pullRequestUrl}|#${pullRequestId} ${title}>`;
+            const text = `\`${repositoryName}\` <${pullRequestUrl}|#${pullRequestNumber} ${title}>`;
             // eslint-disable-next-line no-console
             console.log(`post ${text} to ${channel.name} `);
             yield app.client.chat.postMessage({
@@ -288,7 +303,7 @@ function findPRMessage(channelId, pullRequestUrl, skipPagination = false) {
             if (skipPagination) {
                 has_more = false;
             }
-            const message = messages === null || messages === void 0 ? void 0 : messages.find(({ text }) => text === null || text === void 0 ? void 0 : text.includes(`<${pullRequestUrl}|`));
+            const message = messages === null || messages === void 0 ? void 0 : messages.find(({ text }) => text === null || text === void 0 ? void 0 : text.includes(pullRequestUrl));
             if (has_more && response_metadata) {
                 cursor = response_metadata.next_cursor;
             }
@@ -1864,7 +1879,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 var universalUserAgent = __nccwpck_require__(5030);
 var beforeAfterHook = __nccwpck_require__(3682);
 var request = __nccwpck_require__(6234);
-var graphql = __nccwpck_require__(5668);
+var graphql = __nccwpck_require__(8467);
 var authToken = __nccwpck_require__(334);
 
 function _objectWithoutPropertiesLoose(source, excluded) {
@@ -2435,7 +2450,7 @@ exports.endpoint = endpoint;
 
 /***/ }),
 
-/***/ 5668:
+/***/ 8467:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -7242,7 +7257,7 @@ function getHeader(req, header) {
 
 /***/ }),
 
-/***/ 2940:
+/***/ 3632:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -7278,7 +7293,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(2940), exports);
+__exportStar(__nccwpck_require__(3632), exports);
 __exportStar(__nccwpck_require__(1006), exports);
 __exportStar(__nccwpck_require__(3546), exports);
 __exportStar(__nccwpck_require__(683), exports);
@@ -23381,7 +23396,7 @@ var mixin = __nccwpck_require__(1149);
 var proto = __nccwpck_require__(313);
 var Route = __nccwpck_require__(3699);
 var Router = __nccwpck_require__(4963);
-var req = __nccwpck_require__(8467);
+var req = __nccwpck_require__(1260);
 var res = __nccwpck_require__(4934);
 
 /**
@@ -23587,7 +23602,7 @@ module.exports = function query(options) {
 
 /***/ }),
 
-/***/ 8467:
+/***/ 1260:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -46582,7 +46597,7 @@ function patchAssignSocket(res, callback) {
 /***/ 1223:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var wrappy = __nccwpck_require__(7461)
+var wrappy = __nccwpck_require__(2940)
 module.exports = wrappy(once)
 module.exports.strict = wrappy(onceStrict)
 
@@ -53888,7 +53903,7 @@ function vary (res, field) {
 
 /***/ }),
 
-/***/ 7461:
+/***/ 2940:
 /***/ ((module) => {
 
 // Returns a wrapper function that returns a wrapped callback
