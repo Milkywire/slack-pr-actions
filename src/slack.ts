@@ -160,7 +160,7 @@ async function findPRMessage(
   while (!done) {
     const response = await app.client.conversations.history({
       channel: channelId,
-      limit: 2,
+      limit: 100,
       cursor
     })
     const {messages, response_metadata} = response
