@@ -295,7 +295,7 @@ function findPRMessage(channelId, pullRequestUrl, skipPagination = false) {
         while (!done) {
             const response = yield app.client.conversations.history({
                 channel: channelId,
-                limit: 2,
+                limit: 100,
                 cursor
             });
             const { messages, response_metadata } = response;
