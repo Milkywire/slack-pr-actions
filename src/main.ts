@@ -37,8 +37,17 @@ async function run(): Promise<void> {
       if (!pullRequest) {
         return
       }
+
+      if (pullRequest.draft) {
+        // eslint-disable-next-line no-console
+        console.log('Skip sync to slack because PR is a draft.')
+        return
+      }
+
       core.debug(JSON.stringify(pullRequest))
       if (pullRequest.merged) {
+        // eslint-disable-next-line no-console
+        console.log('PR merged sync to slack.')
         mergePR(pullRequest.html_url)
       } else {
         const {number, title} = pullRequest
