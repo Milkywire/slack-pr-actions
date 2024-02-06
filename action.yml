@@ -12,5 +12,5 @@ inputs:
     required: false
     description: 'The channel id for the channel the message should be posted to If missing the action will post the message to all channels that the bot is a member of.'
 runs:
-  using: 'node12'
+  using: 'node20'
   main: 'dist/index.js'
